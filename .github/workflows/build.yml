@@ -20,33 +20,30 @@ jobs:
       uses: erlef/setup-beam@v1
       with:
         otp-version: '27'
+        rebar3-version: '3'
         
-    - name: Create ebin directory
-      run: mkdir -p ebin
+    - name: Compile with rebar3
+      run: rebar3 compile
     
-    - name: Compile Erlang modules
-      run: erl -make
-    
-    - name: Compile C port drivers
-      run: |
-        ERL_INCLUDE="$INSTALL_DIR_FOR_OTP/usr/include"
-        cc -o ebin/sensehat_drv.so -fpic -shared -Wall -Wextra -Wformat -I"$ERL_INCLUDE" c_src/sensehat_drv.c
-        cc -o ebin/sensestick_drv.so -fpic -shared -Wall -Wextra -Wformat -I"$ERL_INCLUDE" c_src/sensestick_drv.c
+    - name: Run xref analysis
+      run: rebar3 xref
     
     - name: Check compilation artifacts
       run: |
-        echo "Checking ebin directory:"
-        ls -lah ebin/
+        echo "Checking build directory:"
+        ls -lah _build/default/lib/erlang_sensehat/ebin/
         echo "Erlang BEAM files:"
-        ls -lh ebin/*.beam || echo "No BEAM files found"
+        ls -lh _build/default/lib/erlang_sensehat/ebin/*.beam || echo "No BEAM files found"
         echo "C shared objects:"
-        ls -lh ebin/*.so || echo "No shared objects found"
+        ls -lh priv/*.so || echo "No shared objects found"
     
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
       with:
         name: erlang-sensehat-build
-        path: ebin/
+        path: |
+          _build/default/lib/erlang_sensehat/ebin/
+          priv/
         retention-days: 7
 
   lint:
@@ -61,9 +58,10 @@ jobs:
       uses: erlef/setup-beam@v1
       with:
         otp-version: '27'
+        rebar3-version: '3'
     
-    - name: Create ebin directory
-      run: mkdir -p ebin
+    - name: Run dialyzer
+      run: rebar3 dialyzer
     
     - name: Check C code formatting
       run: |

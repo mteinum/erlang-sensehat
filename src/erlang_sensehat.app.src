@@ -1,0 +1,16 @@
+{application, erlang_sensehat, [
+    {description, "Erlang/OTP interface to the Raspberry Pi Sense HAT"},
+    {vsn, "0.2.0"},
+    {registered, [sensehat, snake_game, st_supervisor, st_event_manager]},
+    {mod, {st_supervisor, []}},
+    {applications, [
+        kernel,
+        stdlib
+    ]},
+    {env, []},
+    {modules, []},
+    {licenses, ["MIT"]},
+    {links, [
+        {"GitHub", "https://github.com/mteinum/erlang-sensehat"}
+    ]}
+]}.

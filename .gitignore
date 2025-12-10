@@ -1,3 +1,25 @@
+# Compiled files
 *.beam
 *.so
+ebin/
+priv/*.so
+
+# rebar3
+.rebar3/
+_build/
+_checkouts/
+
+# Erlang
+erl_crash.dump
+*.dump
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
 .DS_Store
+Thumbs.db

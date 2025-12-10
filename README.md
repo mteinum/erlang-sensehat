@@ -53,9 +53,13 @@ Install Erlang/OTP 18 or later. You can use:
 
 ### Build
 
-Compile the driver and erlang code:
-
+Using rebar3 (recommended):
+```bash
+rebar3 compile
 ```
+
+Or using make:
+```bash
 make all
 ```
 
