@@ -1,0 +1,73 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build on Latest OTP
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Erlang/OTP
+      uses: erlef/setup-beam@v1
+      with:
+        otp-version: '27'
+        
+    - name: Create ebin directory
+      run: mkdir -p ebin
+    
+    - name: Compile Erlang modules
+      run: erl -make
+    
+    - name: Compile C port drivers
+      run: |
+        cc -o ebin/sensehat_drv.so -fpic -shared -Wall -Wextra -Wformat sensehat_drv.c
+        cc -o ebin/sensestick_drv.so -fpic -shared -Wall -Wextra -Wformat sensestick_drv.c
+    
+    - name: Check compilation artifacts
+      run: |
+        echo "Checking ebin directory:"
+        ls -lah ebin/
+        echo "Erlang BEAM files:"
+        ls -lh ebin/*.beam || echo "No BEAM files found"
+        echo "C shared objects:"
+        ls -lh ebin/*.so || echo "No shared objects found"
+    
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: erlang-sensehat-build
+        path: ebin/
+        retention-days: 7
+
+  lint:
+    name: Lint and Style Check
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Erlang/OTP
+      uses: erlef/setup-beam@v1
+      with:
+        otp-version: '27'
+    
+    - name: Check C code formatting
+      run: |
+        echo "Checking C files for common issues..."
+        grep -n "TODO\|FIXME\|XXX" *.c || echo "No TODOs found in C files"
+    
+    - name: Verify Makefile targets
+      run: |
+        make clean
+        make all
+        ls -lh ebin/
