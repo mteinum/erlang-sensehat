@@ -6,7 +6,7 @@
 
 Raspberry Pi Sense Hat Erlang port driver
 
-![Project image](https://farm2.staticflickr.com/1694/25082502244_e069cb5089_n.jpg)
+![Project image](docs/img/sensehat-project.jpg)
 
 The Sense Hat is a framebuffer device and there is no native support in Erlang to open this through the file api.
 
