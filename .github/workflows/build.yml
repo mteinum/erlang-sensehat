@@ -29,8 +29,9 @@ jobs:
     
     - name: Compile C port drivers
       run: |
-        cc -o ebin/sensehat_drv.so -fpic -shared -Wall -Wextra -Wformat sensehat_drv.c
-        cc -o ebin/sensestick_drv.so -fpic -shared -Wall -Wextra -Wformat sensestick_drv.c
+        ERL_INCLUDE="$INSTALL_DIR_FOR_OTP/usr/include"
+        cc -o ebin/sensehat_drv.so -fpic -shared -Wall -Wextra -Wformat -I"$ERL_INCLUDE" sensehat_drv.c
+        cc -o ebin/sensestick_drv.so -fpic -shared -Wall -Wextra -Wformat -I"$ERL_INCLUDE" sensestick_drv.c
     
     - name: Check compilation artifacts
       run: |
