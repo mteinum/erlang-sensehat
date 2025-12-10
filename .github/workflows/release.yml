@@ -29,7 +29,7 @@ jobs:
     
     - name: Update version in rebar.config
       run: |
-        sed -i "s/{release, {erlang_sensehat, \"[^\"]*\"}/{release, {erlang_sensehat, \"${{ steps.get_version.outputs.version }}\"/" rebar.config
+        sed -i "s/{release, {erlang_sensehat, \"[^\"]*\"}}/{release, {erlang_sensehat, \"${{ steps.get_version.outputs.version }}\"}}/g" rebar.config
         grep "release, {erlang_sensehat" rebar.config
     
     - name: Update version in src/erlang_sensehat.app.src
