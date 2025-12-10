@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <fcntl.h>
+#include <limits.h>
 #include <linux/fb.h>
 #include <sys/mman.h>
 #include <sys/ioctl.h>
@@ -72,7 +73,7 @@ static int open_fbdev()
 
     for (i = 0; i < ndev; i++)
     {
-        char fname[64];
+        char fname[PATH_MAX];
 
         snprintf(fname, sizeof(fname), "%s/%s", DEV_FB, namelist[i]->d_name);
         fd = open(fname, O_RDWR);
@@ -232,7 +233,7 @@ static void sensehat_drv_output(ErlDrvData handle, char *buff, ErlDrvSizeT buffl
         sensehat_drv_reset_gamma(d, buff[1]);
     }
     else {
-        printf("sensehat_drv: error fn=%i, bufflen=%i\r\n", fn, bufflen);
+        printf("sensehat_drv: error fn=%i, bufflen=%zu\r\n", fn, (size_t)bufflen);
     }
 }
 
@@ -259,7 +260,8 @@ ErlDrvEntry sensehat_driver_entry = {
     0,                          /* int driver_flags, see documentation */
     NULL,                       /* void *handle2, reserved for VM use */
     NULL,                       /* F_PTR process_exit, called when a  monitored process dies */
-    NULL                        /* F_PTR stop_select, called to close an  event object */
+    NULL,                       /* F_PTR stop_select, called to close an  event object */
+    NULL                        /* F_PTR emergency_close, called when port is closed unexpectedly */
 };
 
 DRIVER_INIT(sensehat_drv) /* must match name in driver_entry */

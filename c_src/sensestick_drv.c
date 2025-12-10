@@ -10,6 +10,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdint.h>
+#include <limits.h>
 #include <dirent.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -28,7 +30,7 @@
 
 static ErlDrvData start(ErlDrvPort port, char *command);
 static void stop(ErlDrvData drv_data);
-static int control(ErlDrvData drv_data, unsigned int command,
+static ErlDrvSSizeT control(ErlDrvData drv_data, unsigned int command,
                             char *buf, ErlDrvSizeT len,
 			    char **rbuf, ErlDrvSizeT rlen); 
 static void ready_input(ErlDrvData drv_data, ErlDrvEvent event);
@@ -56,7 +58,8 @@ static ErlDrvEntry sensestick_driver_entry = {
     0,                          /* int driver_flags, see documentation */
     NULL,                       /* void *handle2, reserved for VM use */
     NULL,                       /* F_PTR process_exit, called when a  monitored process dies */
-    NULL                        /* F_PTR stop_select, called to close an  event object */
+    NULL,                       /* F_PTR stop_select, called to close an  event object */
+    NULL                        /* F_PTR emergency_close, called when port is closed unexpectedly */
 };
 
 /**/
@@ -80,7 +83,7 @@ static int open_evdev()
 
 	for (i = 0; i < ndev; i++)
 	{
-		char fname[64];
+		char fname[PATH_MAX];
 		char name[256];
 
 		snprintf(fname, sizeof(fname),
@@ -130,7 +133,7 @@ static void stop(ErlDrvData drv_data) {
 	sensestick_data_t* d = (sensestick_data_t *) drv_data;
 
 	if (d->fd){
-		driver_select(d->port, (ErlDrvEvent)d->fd, DO_READ, 0);
+		driver_select(d->port, (ErlDrvEvent)(intptr_t)d->fd, DO_READ, 0);
 		close(d->fd); /* ? */
 	}
 
@@ -139,7 +142,7 @@ static void stop(ErlDrvData drv_data) {
 
 /* The return value is the number of bytes returned in *rbuf. */
 
-static int control(
+static ErlDrvSSizeT control(
 	ErlDrvData drv_data,
 	unsigned int command,
     __attribute__((unused)) char *buf,
@@ -153,7 +156,7 @@ static int control(
 		// open device
 		d->fd = open_evdev();
 
-		driver_select(d->port, (ErlDrvEvent)d->fd, ERL_DRV_READ, 1);
+		driver_select(d->port, (ErlDrvEvent)(intptr_t)d->fd, ERL_DRV_READ, 1);
 	}
 
 	return 0;
