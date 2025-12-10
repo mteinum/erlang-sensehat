@@ -26,7 +26,7 @@ jobs:
       run: rebar3 compile
     
     - name: Run unit tests
-      run: rebar3 eunit
+      run: rebar3 eunit --verbose
     
     - name: Run xref analysis
       run: rebar3 xref
