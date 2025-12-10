@@ -40,16 +40,20 @@ This code is experimental and not production ready (i.e., not ready for *Astro P
 * Raspberry Pi (any model with 40-pin GPIO header)
 * Raspberry Pi Sense HAT attached
 * Build tools: `gcc`, `make`
-* Erlang/OTP 18 or later
+* Erlang/OTP 27 or later (recommended)
+* rebar3 build tool
 
 ## Installation
 
 ### Install Erlang OTP
 
-Install Erlang/OTP 18 or later. You can use:
+Install Erlang/OTP 27 or later. You can use:
 * Official packages: https://www.erlang.org/downloads
 * Erlang Solutions: https://www.erlang-solutions.com/downloads/
-* Via asdf: `asdf install erlang latest`
+* Via asdf: `asdf install erlang 27.3.4.6`
+* Via Homebrew (macOS): `brew install erlang@27`
+
+**Note:** OTP 27 is required for proper dialyzer support. OTP 28 (development version) may have compatibility issues with some build tools.
 
 ### Build
 

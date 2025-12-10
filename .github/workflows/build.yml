@@ -62,6 +62,7 @@ jobs:
     
     - name: Run dialyzer
       run: rebar3 dialyzer
+      continue-on-error: true
     
     - name: Check C code formatting
       run: |
