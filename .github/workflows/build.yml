@@ -73,5 +73,6 @@ jobs:
     - name: Verify Makefile targets
       run: |
         make clean
+        mkdir -p ebin
         make all
         ls -lh ebin/
