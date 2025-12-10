@@ -67,6 +67,23 @@ Or using make:
 make all
 ```
 
+### Testing
+
+Run unit tests with EUnit:
+```bash
+rebar3 eunit
+```
+
+Run dialyzer type checking:
+```bash
+rebar3 dialyzer
+```
+
+Run cross-reference analysis:
+```bash
+rebar3 xref
+```
+
 ### Usage Example
 
 Start Erlang:
