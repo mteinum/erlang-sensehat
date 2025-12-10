@@ -34,7 +34,8 @@ jobs:
     
     - name: Update version in src/erlang_sensehat.app.src
       run: |
-        sed -i "s/{vsn, \"[^\"]*\"}/{vsn, \"${{ steps.get_version.outputs.version }}\"/" src/erlang_sensehat.app.src
+        sed -i 's/{vsn, "[^"]*"}/{vsn, "${{ steps.get_version.outputs.version }}"}/g' src/erlang_sensehat.app.src
+        echo "Updated version in app.src:"
         grep "vsn" src/erlang_sensehat.app.src
     
     - name: Compile project
