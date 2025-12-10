@@ -62,6 +62,9 @@ jobs:
       with:
         otp-version: '27'
     
+    - name: Create ebin directory
+      run: mkdir -p ebin
+    
     - name: Check C code formatting
       run: |
         echo "Checking C files for common issues..."
