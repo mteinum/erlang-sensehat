@@ -23,8 +23,8 @@
 start() ->
     case whereis(snake_game) of
         undefined ->
-            sensehat:start(),
-            st_supervisor:start_link(),
+            _ = sensehat:start(),
+            _ = st_supervisor:start_link(),
             HandlerId = st_event_manager:subscribe(),
             Pid = spawn(fun() -> init(HandlerId) end),
             register(snake_game, Pid),
@@ -53,20 +53,20 @@ init(HandlerId) ->
         food = Food,
         game_over = false
     },
-    sensehat:clear(?BLACK),
-    draw(State),
-    timer:send_interval(?TICK_INTERVAL, self(), tick),
+    _ = sensehat:clear(?BLACK),
+    _ = draw(State),
+    _ = timer:send_interval(?TICK_INTERVAL, self(), tick),
     loop(State, HandlerId).
 
 -spec loop(#state{}, term()) -> ok.
 loop(#state{game_over = true} = State, HandlerId) ->
     receive
         {st_event, enter} ->
-            st_event_manager:unsubscribe(HandlerId),
+            _ = st_event_manager:unsubscribe(HandlerId),
             init(HandlerId);
         stop ->
-            sensehat:clear(?BLACK),
-            st_event_manager:unsubscribe(HandlerId),
+            _ = sensehat:clear(?BLACK),
+            _ = st_event_manager:unsubscribe(HandlerId),
             ok;
         _ ->
             loop(State, HandlerId)
@@ -87,12 +87,12 @@ loop(State, HandlerId) ->
         
         tick ->
             NewState = update_game(State),
-            draw(NewState),
+            _ = draw(NewState),
             loop(NewState, HandlerId);
         
         stop ->
-            sensehat:clear(?BLACK),
-            st_event_manager:unsubscribe(HandlerId),
+            _ = sensehat:clear(?BLACK),
+            _ = st_event_manager:unsubscribe(HandlerId),
             ok
     after 100 ->
         loop(State, HandlerId)
@@ -128,25 +128,23 @@ update_game(#state{snake = Snake, direction = Dir, food = Food} = State) ->
             end
     end.
 
--spec move({pos_integer(), pos_integer()}, up | down | left | right) ->
-    {pos_integer(), pos_integer()}.
+-spec move({0..7, 0..7}, up | down | left | right) -> {0..7, 0..7}.
 move({X, Y}, up) -> {X, wrap(Y - 1)};
 move({X, Y}, down) -> {X, wrap(Y + 1)};
 move({X, Y}, left) -> {wrap(X - 1), Y};
 move({X, Y}, right) -> {wrap(X + 1), Y}.
 
--spec wrap(integer()) -> pos_integer().
+-spec wrap(integer()) -> 0..7.
+-dialyzer({no_match, wrap/1}).
 wrap(N) when N < 0 -> 7;
 wrap(N) when N > 7 -> 0;
-wrap(N) -> N.
+wrap(N) when N >= 0, N =< 7 -> N.
 
--spec check_collision({pos_integer(), pos_integer()},
-                      [{pos_integer(), pos_integer()}]) -> boolean().
+-spec check_collision({0..7, 0..7}, [{0..7, 0..7}]) -> boolean().
 check_collision(Head, Snake) ->
     lists:member(Head, Snake).
 
--spec spawn_food([{pos_integer(), pos_integer()}]) ->
-    {pos_integer(), pos_integer()}.
+-spec spawn_food([{0..7, 0..7}]) -> {0..7, 0..7}.
 spawn_food(Snake) ->
     {X, Y} = {rand:uniform(8) - 1, rand:uniform(8) - 1},
     case lists:member({X, Y}, Snake) of
@@ -157,24 +155,25 @@ spawn_food(Snake) ->
 -spec draw(#state{}) -> ok.
 draw(#state{snake = Snake, food = {FX, FY}}) ->
     % Clear display
-    sensehat:clear(?BLACK),
+    _ = sensehat:clear(?BLACK),
     
     % Draw snake
     lists:foreach(
         fun({X, Y}) ->
-            sensehat:set_pixel(X, Y, ?GREEN)
+            _ = sensehat:set_pixel(X, Y, ?GREEN),
+            ok
         end,
         Snake
     ),
     
     % Draw food
-    sensehat:set_pixel(FX, FY, ?RED),
+    _ = sensehat:set_pixel(FX, FY, ?RED),
     ok.
 
 -spec flash_game_over() -> ok.
 flash_game_over() ->
-    sensehat:clear(?RED),
+    _ = sensehat:clear(?RED),
     timer:sleep(200),
-    sensehat:clear(?BLACK),
+    _ = sensehat:clear(?BLACK),
     timer:sleep(200),
     ok.

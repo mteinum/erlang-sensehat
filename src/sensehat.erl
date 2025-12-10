@@ -41,6 +41,8 @@ stop() ->
         _Pid -> sensehat ! stop, ok
     end.
 
+-dialyzer({no_match, [loop/2, encode/1]}).
+
 -spec init() -> no_return().
 init() ->
     % Register this process with the atom sensehat
@@ -48,7 +50,7 @@ init() ->
     register(sensehat, self()),
 
     % Open and start the driver
-    Port = open_port({spawn_driver, sensehat_drv}, [binary]),
+    Port = open_port({spawn_driver, "sensehat_drv"}, [binary]),
 
     % Start waiting for messages from the port
     loop(Port, shfb:create(0)).

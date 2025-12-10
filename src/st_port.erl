@@ -37,9 +37,9 @@ start_link() ->
 -spec init(list()) -> {ok, port()}.
 init(_Args) ->
     %% Connect to the port driver
-    Port = open_port({spawn_driver, sensestick_drv}, []),
+    Port = open_port({spawn_driver, "sensestick_drv"}, []),
     %% Send control message to connect to the joystick
-    port_control(Port, 1, []),
+    _ = port_control(Port, 1, []),
     {ok, Port}.
 
 -spec handle_call(term(), {pid(), term()}, port()) -> {reply, {error, unknown_call}, port()}.

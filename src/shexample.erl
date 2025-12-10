@@ -90,11 +90,12 @@ blink(Times) ->
 
 -spec blink(pos_integer(), pos_integer()) -> ok.
 blink(0, _Delay) ->
-    all_off();
+    _ = all_off(),
+    ok;
 blink(Times, Delay) ->
-    all_on(),
+    _ = all_on(),
     timer:sleep(Delay),
-    all_off(),
+    _ = all_off(),
     timer:sleep(Delay),
     blink(Times - 1, Delay).
 
