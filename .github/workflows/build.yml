@@ -63,8 +63,21 @@ jobs:
         otp-version: '27'
         rebar3-version: '3'
     
+    - name: Cache Dialyzer PLT
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cache/rebar3/rebar3_*_plt
+          _build/default/rebar3_*_plt
+        key: ${{ runner.os }}-dialyzer-otp-27-${{ hashFiles('rebar.config') }}
+        restore-keys: |
+          ${{ runner.os }}-dialyzer-otp-27-
+    
+    - name: Compile project
+      run: rebar3 compile
+    
     - name: Run dialyzer
-      run: rebar3 dialyzer
+      run: rebar3 dialyzer --quiet
       continue-on-error: true
     
     - name: Check C code formatting
