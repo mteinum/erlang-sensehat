@@ -30,8 +30,8 @@ jobs:
     - name: Compile C port drivers
       run: |
         ERL_INCLUDE="$INSTALL_DIR_FOR_OTP/usr/include"
-        cc -o ebin/sensehat_drv.so -fpic -shared -Wall -Wextra -Wformat -I"$ERL_INCLUDE" sensehat_drv.c
-        cc -o ebin/sensestick_drv.so -fpic -shared -Wall -Wextra -Wformat -I"$ERL_INCLUDE" sensestick_drv.c
+        cc -o ebin/sensehat_drv.so -fpic -shared -Wall -Wextra -Wformat -I"$ERL_INCLUDE" c_src/sensehat_drv.c
+        cc -o ebin/sensestick_drv.so -fpic -shared -Wall -Wextra -Wformat -I"$ERL_INCLUDE" c_src/sensestick_drv.c
     
     - name: Check compilation artifacts
       run: |
@@ -68,7 +68,7 @@ jobs:
     - name: Check C code formatting
       run: |
         echo "Checking C files for common issues..."
-        grep -n "TODO\|FIXME\|XXX" *.c || echo "No TODOs found in C files"
+        grep -n "TODO\|FIXME\|XXX" c_src/*.c || echo "No TODOs found in C files"
     
     - name: Verify Makefile targets
       run: |
