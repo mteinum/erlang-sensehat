@@ -1,4 +1,9 @@
 # Erlang Sense Hat
+
+[![Build and Test](https://github.com/mteinum/erlang-sensehat/actions/workflows/build.yml/badge.svg)](https://github.com/mteinum/erlang-sensehat/actions/workflows/build.yml)
+[![Erlang/OTP](https://img.shields.io/badge/Erlang%2FOTP-27-brightgreen.svg)](https://www.erlang.org/)
+[![License](https://img.shields.io/github/license/mteinum/erlang-sensehat.svg)](LICENSE)
+
 Raspberry Pi Sense Hat Erlang port driver
 
 ![Project image](https://farm2.staticflickr.com/1694/25082502244_e069cb5089_n.jpg)
