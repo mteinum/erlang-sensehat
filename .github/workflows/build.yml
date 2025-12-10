@@ -77,7 +77,7 @@ jobs:
       run: rebar3 compile
     
     - name: Run dialyzer
-      run: rebar3 dialyzer --quiet
+      run: rebar3 dialyzer
       continue-on-error: true
     
     - name: Check C code formatting
